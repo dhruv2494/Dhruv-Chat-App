@@ -1,24 +1,20 @@
 import React from "react";
-// import JoinChat from "./Socket/JoinChat";
-import SideBar from "./components/SideBar";
-import ChatComponents from "./components/ChatComponents";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+
+import ChatPage from "./pages/ChatPage";
+import Login from "./pages/Login";
+import rootReducer from "./redux";
+import RouterFile from "./router/RouterFile";
+
+console.log(rootReducer);
+const store = createStore(rootReducer);
 
 const App = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        backgroundColor: "black",
-      }}
-    >
-      <div className="sidebar-div">
-        <SideBar />
-      </div>
-      <div className="chatComponents-div">
-        <ChatComponents userName={"Mukesh"} />
-      </div>
-    </div>
+    <Provider store={store}>
+      <RouterFile />
+    </Provider>
   );
 };
 
