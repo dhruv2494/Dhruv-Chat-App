@@ -1,0 +1,16 @@
+<svg
+    width="50%"
+    height="50%"
+    viewBox="0 0 32 32"
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <defs></defs>
+
+    <title />
+
+    <g data-name="12-sent" id="_12-sent">
+        <polygon class="chat-sent-svg-style" points="19 31 13 19 1 13 31 1 19 31" />
+
+        <line class="chat-sent-svg-style" x1="13" x2="25" y1="19" y2="7" />
+    </g>
+</svg>
