@@ -1,102 +1,53 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setProfile } from "../redux/actions/profileAction";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { setProfile } from "../redux/actions/profileAction";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const [form, setForm] = useState({
-    mobileNo: "",
-    password: "",
-  });
-  const dispatch = useDispatch();
-  const navigation = useNavigate();
-  const handleLogin = () => {
-    if (form.mobileNo !== "" && form.password !== "") {
-      dispatch(setProfile(form));
+  // const userData = JSON.parse(localStorage.getItem("profile"));
+  // const dispatch = useDispatch();
+
+  const profileData = useSelector((state) => state.profile);
+  useEffect(() => {
+    // if (userData && userData.login) {
+    //   dispatch(setProfile(userData));
+    //   navigation("/chat");
+    // }
+    if (profileData.login) {
+      navigation("/chat");
     }
-    navigation("/chat");
+  }, []);
+  const [form, setForm] = useState({
+    mobile: "",
+  });
+  const navigation = useNavigate();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    navigation("/register", { state: form });
   };
 
   return (
     <div
       style={{
-        width: "100%",
-        height: "100dvh",
         backgroundColor: "#2c2c2c",
+        height: "100dvh",
         display: "flex",
-        flexDirection: "column",
-        // justifyContent: "center",
-        color: "white",
-        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <div
-        style={{
-          width: "30%",
-          marginTop: "50px",
-        }}
-      >
-        <div>
-          <h4
-            style={{
-              width: "100%",
-              margin: "0",
-              marginBottom: "10px",
-              marginTop: "10px",
-            }}
-          >
-            Mobile No.
-          </h4>
-          <input
-            style={{
-              width: "100%",
-              height: "20px",
-            }}
-            type="number"
-            value={form.mobileNo}
-            onChange={(e) => setForm({ ...form, mobileNo: e.target.value })}
-          />
-        </div>
-        <div>
-          <h4
-            style={{
-              width: "100%",
-              margin: "0",
-              marginBottom: "10px",
-              marginTop: "10px",
-            }}
-          >
-            Password
-          </h4>
-          <input
-            style={{
-              width: "100%",
-              height: "20px",
-            }}
-            type="password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-        </div>
-      </div>
-      <button
-        onClick={handleLogin}
-        style={{
-          width: "80px",
-          marginTop: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          backgroundColor: "#696969",
-          border: "none",
-          padding: "5px 10px",
-          borderRadius: "10px",
-          color: "white",
-        }}
-      >
-        Login
-      </button>
+      <form id="login-signup-form" onSubmit={handleLogin}>
+        <input
+          name="phone"
+          type="number"
+          placeholder="Mobile Number"
+          required
+          value={form.mobile}
+          onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+        />
+
+        <input type="submit" />
+      </form>
     </div>
   );
 };

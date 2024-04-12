@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SideBar from "../components/SideBar";
 import ChatComponents from "../components/ChatComponents";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ChatPage = () => {
+  const navigation = useNavigate();
+
   const profileData = useSelector((state) => state.profile);
-  console.log(profileData);
+  useEffect(() => {
+    if (!profileData.login) {
+      navigation("/");
+    }
+  }, []);
   return (
     <div
       style={{

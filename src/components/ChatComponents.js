@@ -1,170 +1,213 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+
+import io from "socket.io-client";
+import api_url from "../api/ApiBaseUrl";
+let socket;
 
 const ChatComponents = ({ userName }) => {
+  const profileData = useSelector((state) => state.profile);
+
   const chatContainerRef = useRef(null);
   const [inputMsg, setInputMsg] = useState("");
-  const [chatData, setChatData] = useState([
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-    {
-      massage: "hello",
-      sentByMe: false,
-      time: "10:25",
-    },
-    {
-      massage: "hiii",
-      sentByMe: true,
-      time: "10:26",
-    },
-    {
-      massage: "How Are You",
-      sentByMe: false,
-      time: "10:27",
-    },
-    {
-      massage: "I am Fine",
-      sentByMe: true,
-      time: "10:28",
-    },
-  ]);
+  const [chatData, setChatData] = useState([]);
+  // const [chatData, setChatData] = useState([
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  //   {
+  //     massage: "hello",
+  //     sentByMe: false,
+  //     time: "10:25",
+  //   },
+  //   {
+  //     massage: "hiii",
+  //     sentByMe: true,
+  //     time: "10:26",
+  //   },
+  //   {
+  //     massage: "How Are You",
+  //     sentByMe: false,
+  //     time: "10:27",
+  //   },
+  //   {
+  //     massage: "I am Fine",
+  //     sentByMe: true,
+  //     time: "10:28",
+  //   },
+  // ]);
+
+  useEffect(() => {
+    socket = io(api_url);
+
+    socket.on("connect", () => {
+      console.log("Connected to server. Socket ID:", socket.id);
+    });
+    socket.emit("new-user-joined", profileData.mobileNo);
+
+    socket.on("user-join", (name) => {
+      setChatData((p) => [
+        ...p,
+        {
+          massage: `${name} Joined`,
+          sentByMe: false,
+          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+        },
+      ]);
+    });
+
+    socket.on("receive-msg", (msg) => {
+      setChatData((p) => [
+        ...p,
+        {
+          massage: msg,
+          sentByMe: false,
+          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
+        },
+      ]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleMsgSent = async () => {
     if (inputMsg !== "") {
@@ -173,18 +216,18 @@ const ChatComponents = ({ userName }) => {
         {
           massage: inputMsg,
           sentByMe: true,
-          time: "10:28",
+          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
         },
       ]);
       await setInputMsg("");
     }
+    socket.emit("send-msg", inputMsg);
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
   };
 
-  
   return (
     <div
       style={{
@@ -230,6 +273,11 @@ const ChatComponents = ({ userName }) => {
           onChange={(e) => setInputMsg(e.target.value)}
           placeholder="type a massage"
           className="chat-msg-input"
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleMsgSent();
+            }
+          }}
         />
         <div
           style={{
