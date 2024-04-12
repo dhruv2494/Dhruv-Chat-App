@@ -29,6 +29,7 @@ const Register = () => {
           if (e.data.found) {
             setForm(e.data.user);
           }
+          setLoading(false);
         })
         .catch((e) => console.log(e));
     } else {
