@@ -19,6 +19,7 @@ const Register = () => {
   });
 
   const [formPass, setFormPass] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (mobile) {
@@ -93,48 +94,52 @@ const Register = () => {
         justifyContent: "center",
       }}
     >
-      {isUserExist ? (
-        <form id="login-signup-form" onSubmit={handleLogin}>
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-            // minLength={8}
-            value={formPass}
-            onChange={(e) => setFormPass(e.target.value)}
-          />
-          <input type="submit" />
-        </form>
-      ) : (
-        <form id="login-signup-form" onSubmit={handleRegister}>
-          <input
-            name="name"
-            type="text"
-            placeholder="Name"
-            required
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-            // minLength={8}
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-          <input type="submit" />
-        </form>
+      {loading ? null : ( //loader setup
+        <div>
+          {isUserExist ? (
+            <form id="login-signup-form" onSubmit={handleLogin}>
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                required
+                // minLength={8}
+                value={formPass}
+                onChange={(e) => setFormPass(e.target.value)}
+              />
+              <input type="submit" />
+            </form>
+          ) : (
+            <form id="login-signup-form" onSubmit={handleRegister}>
+              <input
+                name="name"
+                type="text"
+                placeholder="Name"
+                required
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                required
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                required
+                // minLength={8}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+              <input type="submit" />
+            </form>
+          )}
+        </div>
       )}
     </div>
   );
