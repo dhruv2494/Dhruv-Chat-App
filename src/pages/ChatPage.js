@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import ChatComponents from "../components/ChatComponents";
 import { useSelector } from "react-redux";
@@ -8,6 +8,12 @@ const ChatPage = () => {
   const navigation = useNavigate();
 
   const profileData = useSelector((state) => state.profile);
+  console.log(profileData);
+  const [otherUserInfo, setOtherUserInfo] = useState({
+    name: "",
+    mobile: "",
+    loaded: false,
+  });
   useEffect(() => {
     if (!profileData.login) {
       navigation("/");
@@ -22,10 +28,12 @@ const ChatPage = () => {
       }}
     >
       <div className="sidebar-div">
-        <SideBar />
+        <SideBar setOtherUserInfo={setOtherUserInfo} />
       </div>
       <div className="chatComponents-div">
-        <ChatComponents userName={"Mukesh"} />
+        {otherUserInfo.loaded ? (
+          <ChatComponents otherUserInfo={otherUserInfo} />
+        ) : null}
       </div>
     </div>
   );

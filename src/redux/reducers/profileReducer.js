@@ -8,6 +8,7 @@ const profileReducer = (state = initialProfile, action) => {
   switch (action.type) {
     case SET_PROFILE: {
       // localStorage.setItem("profile", JSON.stringify(action.profile));
+      document.title = action?.profile?.name;
       return action.profile;
     }
     default:

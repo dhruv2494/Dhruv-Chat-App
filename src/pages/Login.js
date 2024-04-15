@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { setProfile } from "../redux/actions/profileAction";
-import { useDispatch } from "react-redux";
+
+import { ThreeDots } from "react-loader-spinner";
+import { post } from "../api/Api";
 
 const Login = () => {
-  // const userData = JSON.parse(localStorage.getItem("profile"));
-  // const dispatch = useDispatch();
-
   const profileData = useSelector((state) => state.profile);
   useEffect(() => {
-    // if (userData && userData.login) {
-    //   dispatch(setProfile(userData));
-    //   navigation("/chat");
-    // }
     if (profileData.login) {
       navigation("/chat");
     }
@@ -21,10 +15,22 @@ const Login = () => {
   const [form, setForm] = useState({
     mobile: "",
   });
+  const [loader, setLoader] = useState(false);
   const navigation = useNavigate();
   const handleLogin = (e) => {
     e.preventDefault();
-    navigation("/register", { state: form });
+    setLoader(true);
+    post("user/find-user", form)
+      .then((e) => {
+        setLoader(false);
+        navigation("/register", {
+          state: { userInfo: { ...e.data, mobile: form.mobile } },
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+        setLoader(false);
+      });
   };
 
   return (
@@ -46,7 +52,22 @@ const Login = () => {
           onChange={(e) => setForm({ ...form, mobile: e.target.value })}
         />
 
-        <input type="submit" />
+        <button type="submit">
+          {loader ? (
+            <ThreeDots
+              visible={true}
+              height="40"
+              width="40"
+              color="white"
+              radius="9"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
+          ) : (
+            "find"
+          )}
+        </button>
       </form>
     </div>
   );

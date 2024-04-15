@@ -3,211 +3,71 @@ import { useSelector } from "react-redux";
 
 import io from "socket.io-client";
 import api_url from "../api/ApiBaseUrl";
+import { post } from "../api/Api";
 let socket;
 
-const ChatComponents = ({ userName }) => {
+const ChatComponents = ({ otherUserInfo }) => {
   const profileData = useSelector((state) => state.profile);
-
+  console.log(profileData);
   const chatContainerRef = useRef(null);
   const [inputMsg, setInputMsg] = useState("");
   const [chatData, setChatData] = useState([]);
-  // const [chatData, setChatData] = useState([
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  //   {
-  //     massage: "hello",
-  //     sentByMe: false,
-  //     time: "10:25",
-  //   },
-  //   {
-  //     massage: "hiii",
-  //     sentByMe: true,
-  //     time: "10:26",
-  //   },
-  //   {
-  //     massage: "How Are You",
-  //     sentByMe: false,
-  //     time: "10:27",
-  //   },
-  //   {
-  //     massage: "I am Fine",
-  //     sentByMe: true,
-  //     time: "10:28",
-  //   },
-  // ]);
+
+  const [userRoom, setUserRoom] = useState("");
 
   useEffect(() => {
-    socket = io(api_url);
-
-    socket.on("connect", () => {
-      console.log("Connected to server. Socket ID:", socket.id);
-    });
-    socket.emit("new-user-joined", profileData.mobileNo);
-
-    socket.on("user-join", (name) => {
-      setChatData((p) => [
-        ...p,
-        {
-          massage: `${name} Joined`,
-          sentByMe: false,
-          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-        },
-      ]);
-    });
-
-    socket.on("receive-msg", (msg) => {
-      setChatData((p) => [
-        ...p,
-        {
-          massage: msg,
-          sentByMe: false,
-          time: `${new Date().getHours()}:${new Date().getMinutes()}`,
-        },
-      ]);
-    });
-
-    return () => {
-      socket.disconnect();
+    const findRoom = async () => {
+      {
+        profileData &&
+          post("chat/find-chat", {
+            mobile1: profileData?.mobile,
+            mobile2: otherUserInfo?.mobile,
+          })
+            .then((e) => {
+              const response = e.data.roomData;
+              setUserRoom(response.room);
+              setChatData(
+                response.chat.map((e, i) => ({
+                  massage: e.massage,
+                  sentByMe: e.sender === profileData.mobile,
+                  time: e.timestamp,
+                }))
+              );
+            })
+            .catch((e) => console.log(e));
+      }
     };
-  }, []);
+    findRoom();
+  }, [otherUserInfo, profileData]);
+
+  useEffect(() => {
+    if (userRoom && userRoom !== "") {
+      socket = io(api_url);
+
+      socket.on("connect", () => {
+        console.log("Connected to server. Socket ID:", socket.id);
+      });
+      socket.emit("new-user-joined", profileData.mobile);
+
+      socket.emit("join-room", userRoom);
+
+      socket.on("receive-msg", (msg) => {
+        console.log("recive", msg);
+        setChatData((p) => [
+          ...p,
+          {
+            massage: msg.massage,
+            sentByMe: msg.sender === profileData.mobile,
+            time: msg.timestamp,
+          },
+        ]);
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [userRoom]);
 
   const handleMsgSent = async () => {
     if (inputMsg !== "") {
@@ -221,7 +81,14 @@ const ChatComponents = ({ userName }) => {
       ]);
       await setInputMsg("");
     }
-    socket.emit("send-msg", inputMsg);
+    socket.emit("send-msg", {
+      room: userRoom,
+      data: {
+        massage: inputMsg,
+        sender: profileData.mobile,
+        timestamp: `${new Date().getHours()}:${new Date().getMinutes()}`,
+      },
+    });
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
@@ -244,7 +111,7 @@ const ChatComponents = ({ userName }) => {
             src="https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"
             alt="user Profile Picture"
           />
-          <p className="chat-name">{userName}</p>
+          <p className="chat-name">{otherUserInfo?.name}</p>
         </div>
         <div className="chat-massage-container" ref={chatContainerRef}>
           {chatData.map((e, i) => {
