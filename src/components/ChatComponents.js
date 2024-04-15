@@ -80,18 +80,18 @@ const ChatComponents = ({ otherUserInfo }) => {
         },
       ]);
       await setInputMsg("");
-    }
-    socket.emit("send-msg", {
-      room: userRoom,
-      data: {
-        massage: inputMsg,
-        sender: profileData.mobile,
-        timestamp: `${new Date().getHours()}:${new Date().getMinutes()}`,
-      },
-    });
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      socket.emit("send-msg", {
+        room: userRoom,
+        data: {
+          massage: inputMsg,
+          sender: profileData.mobile,
+          timestamp: `${new Date().getHours()}:${new Date().getMinutes()}`,
+        },
+      });
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollHeight;
+      }
     }
   };
 
