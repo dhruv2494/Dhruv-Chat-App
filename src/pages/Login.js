@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 
 import { ThreeDots } from "react-loader-spinner";
 import { post } from "../api/Api";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const profileData = useSelector((state) => state.profile);
@@ -20,17 +21,31 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     setLoader(true);
-    post("user/find-user", form)
-      .then((e) => {
-        setLoader(false);
-        navigation("/register", {
-          state: { userInfo: { ...e.data, mobile: form.mobile } },
+    if (form.mobile.length === 10) {
+      post("user/find-user", form)
+        .then((e) => {
+          setLoader(false);
+          navigation("/register", {
+            state: { userInfo: { ...e.data, mobile: form.mobile } },
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          setLoader(false);
         });
-      })
-      .catch((e) => {
-        console.log(e);
-        setLoader(false);
+    } else {
+      toast.error("Please enter exactly 10 digits", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
+      setLoader(false);
+    }
   };
 
   return (
