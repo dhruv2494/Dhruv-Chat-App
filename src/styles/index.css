@@ -69,7 +69,6 @@ code {
   border-radius: 5px;
   display: flex;
   align-items: self-end;
-  /* padding-right: 2px; */
 
 }
 
@@ -92,7 +91,6 @@ code {
   flex-direction: row;
   align-items: center;
   padding-left: 20px;
-  /* justify-content: center; */
 }
 
 
@@ -106,7 +104,6 @@ code {
   color: #fafafa;
   outline: none;
 
-  /* border-color: #2c2c2c; */
 }
 
 
@@ -162,8 +159,19 @@ code {
 }
 
 .sidebar-chat-render-class {
-  background-color: #383838;
   padding: 10px 12px;
-  border-radius: 10px;
   margin-top: 10px;
+}
+
+.sidebar-chat-render-class:hover {
+  background-color: #383838;
+  cursor: pointer;
+
+}
+
+.chat-typing-animation {
+  width: 13px;
+  height: 13px;
+  margin-left: 0px;
+  margin-top: -2.5px;
 }

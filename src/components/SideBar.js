@@ -5,10 +5,13 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../redux/actions/profileAction";
 import { useNavigate } from "react-router-dom";
-const SideBar = ({ setOtherUserInfo }) => {
+import { ThreeDots } from "react-loader-spinner";
+const SideBar = ({ setOtherUserInfo, setMainChatLoader }) => {
   const [searchInput, setSearchInput] = useState("");
   const [recentData, setRecentData] = useState([]);
+  const [loader, setLoader] = useState(false);
   const profileData = useSelector((state) => state.profile);
+
   const dispatch = useDispatch();
   const navigation = useNavigate();
 
@@ -17,18 +20,25 @@ const SideBar = ({ setOtherUserInfo }) => {
       navigation("/");
     }
 
-    profileData?.recentlyChatted?.map(async (e, i) => {
-      await post("user/get-other-user", { mobile: e.mobile })
+    const getRecentChat = async () => {
+      setLoader(true);
+      await post("chat/find-recent-chat", { mobile: profileData.mobile })
         .then((element) => {
           if (element.data.found) {
-            setRecentData((p) => [...p, element.data.user]);
+            setRecentData(element.data.chat);
           }
+          setLoader(false);
         })
-        .catch((e) => console.log(e));
-    });
+        .catch((e) => {
+          console.log(e);
+          setLoader(false);
+        });
+    };
+    getRecentChat();
   }, [profileData]);
 
   const handleSearch = (searchNumber) => {
+    setMainChatLoader(true);
     post("user/search-user", {
       mobile: searchNumber,
       myMobile: profileData.mobile,
@@ -36,6 +46,23 @@ const SideBar = ({ setOtherUserInfo }) => {
       .then((e) => {
         if (e.data.found) {
           setOtherUserInfo({ ...e.data.user, loaded: true });
+          let a = [...recentData];
+          let foundIndex = a.findIndex(
+            (item) => item.mobile === e.data.user.mobile
+          );
+
+          if (foundIndex !== -1) {
+            const user = a.splice(foundIndex, 1)[0];
+
+            a.push(user);
+          }
+
+          if (foundIndex === -1) {
+            a.push(e.data.user);
+          }
+
+          setRecentData(a);
+
           setSearchInput("");
         } else {
           toast.error("User Not Found", {
@@ -55,9 +82,11 @@ const SideBar = ({ setOtherUserInfo }) => {
           });
           setSearchInput("");
         }
+        setMainChatLoader(false);
       })
       .catch((e) => {
         console.log(e);
+        setMainChatLoader(false);
       });
   };
 
@@ -67,6 +96,7 @@ const SideBar = ({ setOtherUserInfo }) => {
         login: false,
       })
     );
+    localStorage.removeItem("chat-aop-profile");
   };
 
   return (
@@ -102,6 +132,11 @@ const SideBar = ({ setOtherUserInfo }) => {
             color: "#fafafa",
             outline: "none",
           }}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSearch(searchInput);
+            }
+          }}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
@@ -109,34 +144,53 @@ const SideBar = ({ setOtherUserInfo }) => {
           <FaSearch />
         </div>
       </div>
-      <div
-        className="sidebar-recent-render-main-div"
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        {recentData.map((e, i) => {
-          return (
-            <div
-              onClick={() => handleSearch(e.mobile)}
-              className="sidebar-chat-render-class"
-            >
-              <p
-                style={{
-                  margin: 0,
-                }}
+      {loader ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ThreeDots
+            visible={true}
+            height="50"
+            width="50"
+            color="white"
+            radius="9"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
+        </div>
+      ) : (
+        <div
+          className="sidebar-recent-render-main-div"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          {[...recentData].reverse().map((e, i) => {
+            return (
+              <div
+                onClick={() => handleSearch(e.mobile)}
+                className="sidebar-chat-render-class"
               >
-                {e.name}
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                }}
-              >
-                {e.mobile}
-              </p>
-            </div>
-          );
-        })}
-      </div>
+                <p
+                  style={{
+                    margin: 0,
+                    fontWeight: "500",
+                  }}
+                >
+                  {e.name}
+                </p>
+                <p
+                  style={{
+                    margin: 0,
+                    color: "#c1c1c1",
+                    fontSize: "13px",
+                    marginTop: "1px",
+                  }}
+                >
+                  {e.mobile}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      )}
       <div
         onClick={handleLogOut}
         style={{

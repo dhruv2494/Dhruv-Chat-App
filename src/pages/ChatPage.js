@@ -8,7 +8,8 @@ const ChatPage = () => {
   const navigation = useNavigate();
 
   const profileData = useSelector((state) => state.profile);
-  console.log(profileData);
+  // console.log(profileData);
+  const [mainChatLoader, setMainChatLoader] = useState(false);
   const [otherUserInfo, setOtherUserInfo] = useState({
     name: "",
     mobile: "",
@@ -28,11 +29,17 @@ const ChatPage = () => {
       }}
     >
       <div className="sidebar-div">
-        <SideBar setOtherUserInfo={setOtherUserInfo} />
+        <SideBar
+          setOtherUserInfo={setOtherUserInfo}
+          setMainChatLoader={setMainChatLoader}
+        />
       </div>
       <div className="chatComponents-div">
         {otherUserInfo.loaded ? (
-          <ChatComponents otherUserInfo={otherUserInfo} />
+          <ChatComponents
+            otherUserInfo={otherUserInfo}
+            mainChatLoader={mainChatLoader}
+          />
         ) : null}
       </div>
     </div>

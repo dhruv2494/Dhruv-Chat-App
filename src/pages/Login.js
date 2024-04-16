@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ThreeDots } from "react-loader-spinner";
 import { post } from "../api/Api";
 import { toast } from "react-toastify";
+import { setProfile } from "../redux/actions/profileAction";
 
 const Login = () => {
   const profileData = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    let localData = JSON.parse(localStorage.getItem("chat-aop-profile"));
+    if (localData && localData.login) {
+      dispatch(setProfile(localData));
+      navigation("/chat");
+    }
     if (profileData.login) {
       navigation("/chat");
     }
