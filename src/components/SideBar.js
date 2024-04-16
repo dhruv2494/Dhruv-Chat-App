@@ -168,24 +168,31 @@ const SideBar = ({ setOtherUserInfo, setMainChatLoader }) => {
                 onClick={() => handleSearch(e.mobile)}
                 className="sidebar-chat-render-class"
               >
-                <p
-                  style={{
-                    margin: 0,
-                    fontWeight: "500",
-                  }}
-                >
-                  {e.name}
-                </p>
-                <p
-                  style={{
-                    margin: 0,
-                    color: "#c1c1c1",
-                    fontSize: "13px",
-                    marginTop: "1px",
-                  }}
-                >
-                  {e.mobile}
-                </p>
+                <img
+                  className="sidebar-user-profile-picture"
+                  src="https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"
+                  alt="user Profile Picture"
+                />
+                <div>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {e.name}
+                  </p>
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "#c1c1c1",
+                      fontSize: "13px",
+                      marginTop: "1px",
+                    }}
+                  >
+                    {e.mobile}
+                  </p>
+                </div>
               </div>
             );
           })}
