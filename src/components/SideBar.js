@@ -17,7 +17,7 @@ const SideBar = ({ setOtherUserInfo, setMainChatLoader }) => {
 
   useEffect(() => {
     if (!profileData.login) {
-      navigation("/");
+      navigation("/login");
     }
 
     const getRecentChat = async () => {
@@ -140,7 +140,14 @@ const SideBar = ({ setOtherUserInfo, setMainChatLoader }) => {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <div onClick={() => handleSearch(searchInput)}>
+        <div
+          style={{
+            width: "10%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+          onClick={() => handleSearch(searchInput)}
+        >
           <FaSearch />
         </div>
       </div>
@@ -208,6 +215,7 @@ const SideBar = ({ setOtherUserInfo, setMainChatLoader }) => {
           textAlign: "center",
           position: "absolute",
           bottom: "0",
+          cursor: "pointer",
         }}
       >
         Log Out

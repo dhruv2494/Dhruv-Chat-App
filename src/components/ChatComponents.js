@@ -77,10 +77,10 @@ const ChatComponents = ({ otherUserInfo, mainChatLoader }) => {
             time: msg.timestamp,
           },
         ]);
-        if (chatContainerRef.current) {
-          chatContainerRef.current.scrollTop =
-            chatContainerRef.current.scrollHeight;
-        }
+        // if (chatContainerRef.current) {
+        //   chatContainerRef.current.scrollTop =
+        //     chatContainerRef.current.scrollHeight;
+        // }
         setIsTyping(false);
       });
 
@@ -89,6 +89,13 @@ const ChatComponents = ({ otherUserInfo, mainChatLoader }) => {
       };
     }
   }, [userRoom]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatData]);
 
   const handleMsgSent = async () => {
     if (inputMsg !== "") {
@@ -109,10 +116,10 @@ const ChatComponents = ({ otherUserInfo, mainChatLoader }) => {
           timestamp: `${new Date().getHours()}:${new Date().getMinutes()}`,
         },
       });
-      if (chatContainerRef.current) {
-        chatContainerRef.current.scrollTop =
-          chatContainerRef.current.scrollHeight;
-      }
+      // if (chatContainerRef.current) {
+      //   chatContainerRef.current.scrollTop =
+      //     chatContainerRef.current.scrollHeight;
+      // }
     }
   };
 

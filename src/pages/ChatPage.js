@@ -17,7 +17,7 @@ const ChatPage = () => {
   });
   useEffect(() => {
     if (!profileData.login) {
-      navigation("/");
+      navigation("/login");
     }
   }, []);
   return (
