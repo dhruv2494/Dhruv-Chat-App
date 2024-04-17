@@ -8,9 +8,9 @@ const LoadingPage = () => {
   const navigation = useNavigate();
 
   useEffect(() => {
-    setTimeout(() => {
-      navigation("/login");
-    }, 3000);
+
+    navigation("/login");
+
   }, []);
   return (
     <div
